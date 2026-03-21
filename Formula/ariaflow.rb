@@ -7,6 +7,9 @@ class Ariaflow < Formula
   license "MIT"
   head "https://github.com/bonomani/ariaflow.git", branch: "master"
 
+  depends_on "aria2"
+  depends_on "python@3.13"
+
   def install
     libexec.install "src"
 
@@ -15,6 +18,14 @@ class Ariaflow < Formula
       exec env PYTHONPATH="#{libexec}/src:${PYTHONPATH}" python3 -m aria_queue "$@"
     EOS
     chmod 0755, bin/"ariaflow"
+  end
+
+  service do
+    run [opt_bin/"ariaflow", "serve", "--host", "127.0.0.1", "--port", "8000"]
+    keep_alive true
+    working_dir var
+    log_path var/"log/ariaflow.log"
+    error_log_path var/"log/ariaflow.err.log"
   end
 
   test do
