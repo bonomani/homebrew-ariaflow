@@ -7,7 +7,7 @@ class Ariaflow < Formula
   license "MIT"
   depends_on "python"
   depends_on "aria2"
-  head "https://github.com/bonomani/ariaflow.git", branch: "master"
+  head "https://github.com/bonomani/ariaflow.git", branch: "main"
 
   def install
     libexec.install "src"
