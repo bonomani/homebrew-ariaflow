@@ -67,10 +67,6 @@ jobs:
               chmod 0755, bin/"ariaflow"
             end
 
-            post_install do
-              system "/bin/launchctl", "kickstart", "-k", "gui/#{Process.uid}/com.ariaflow.serve"
-            end
-
             service do
               run [opt_bin/"ariaflow", "serve", "--host", "127.0.0.1", "--port", "8000"]
               keep_alive true
