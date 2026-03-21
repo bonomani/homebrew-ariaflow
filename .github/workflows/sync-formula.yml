@@ -21,8 +21,14 @@ jobs:
       - name: Get latest ariaflow release
         id: release
         run: |
-          TAG=$(curl -s https://api.github.com/repos/bonomani/ariaflow/releases/latest \
-            | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
+          # Skip draft releases — filter to only published (non-draft, non-prerelease ignored) releases
+          TAG=$(curl -s https://api.github.com/repos/bonomani/ariaflow/releases \
+            | python3 -c "
+import sys,json
+releases = json.load(sys.stdin)
+published = [r for r in releases if not r.get('draft', True) and r.get('tag_name')]
+print(published[0]['tag_name'])
+")
           VERSION="${TAG#v}"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -51,7 +57,7 @@ jobs:
             license "MIT"
             head "https://github.com/bonomani/ariaflow.git", branch: "master"
 
-            depends_on "python@3.12"
+            depends_on "python3"
 
             def install
               libexec.install "src"
@@ -59,7 +65,7 @@ jobs:
               (bin/"ariaflow").write <<~EOS
                 #!/bin/bash
                 export PYTHONPATH="\#{libexec}/src:\${PYTHONPATH}"
-                exec "\#{Formula["python@3.12"].opt_bin}/python3" -m aria_queue "\$@"
+                exec "\#{Formula["python3"].opt_bin}/python3" -m aria_queue "\$@"
               EOS
               chmod 0755, bin/"ariaflow"
             end
