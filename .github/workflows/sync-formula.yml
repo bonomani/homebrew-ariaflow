@@ -22,8 +22,8 @@ jobs:
         id: release
         run: |
           # Skip draft releases — use first published (non-draft) release
-          TAG=$(curl -s https://api.github.com/repos/bonomani/ariaflow/releases \
-            | python3 -c "import sys,json; r=[x for x in json.load(sys.stdin) if not x.get('draft',True) and x.get('tag_name')]; r.sort(key=lambda x: x['created_at'], reverse=True); print(r[0]['tag_name'])")
+          TAG=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/bonomani/ariaflow/releases \
+            | python3 -c "import sys,json; data=json.load(sys.stdin); r=[x for x in (data if isinstance(data,list) else []) if not x.get('draft',True) and x.get('tag_name')]; r.sort(key=lambda x: x['created_at'], reverse=True); print(r[0]['tag_name'])")
           VERSION="${TAG#v}"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
