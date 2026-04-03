@@ -1,13 +1,13 @@
 class Ariaflow < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow"
-  url "https://github.com/bonomani/ariaflow/archive/refs/tags/v0.1.74.tar.gz"
-  sha256 "8e91de42237d71689bc21842f76fac722426d8f088d63fff66def957e8b2cb0a"
-  version "0.1.74"
+  url "https://github.com/bonomani/ariaflow/archive/refs/tags/v0.1.76.tar.gz"
+  sha256 "657f9009b8e8d56e361536acc3f73d4b99da6fbd711d8688101f0c4ecbcf0bd7"
+  version "0.1.76"
   license "MIT"
   depends_on "python"
   depends_on "aria2"
-  head "https://github.com/bonomani/ariaflow.git", branch: "master"
+  head "https://github.com/bonomani/ariaflow.git", branch: "main"
 
   def install
     libexec.install "src"
