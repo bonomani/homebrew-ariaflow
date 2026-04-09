@@ -1,9 +1,9 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.166.tar.gz"
-  sha256 "de255f51445e005877f947cab1f8d2543322f14f651336ce095654fcfee1a7c8"
-  version "0.1.166"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.167.tar.gz"
+  sha256 "b43234821257bb0c9641c466430c579df1042c149b6a7f14451daa94889058c4"
+  version "0.1.167"
   license "MIT"
   depends_on "python"
   depends_on "aria2"
@@ -25,7 +25,9 @@ class AriaflowServer < Formula
 
     (bin/"ariaflow-server").write <<~EOS
       #!/bin/bash
-      exec env PYTHONPATH="#{libexec}/src:#{libexec}/venv/lib/python3.*/site-packages:${PYTHONPATH}" python3 -m ariaflow_server "$@"
+      VENV="#{libexec}/venv"
+      SITE=$(find "$VENV/lib" -maxdepth 1 -name 'python3.*' -print -quit)/site-packages
+      exec env PYTHONPATH="#{libexec}/src:$SITE:${PYTHONPATH}" "$VENV/bin/python3" -m ariaflow_server "$@"
     EOS
     chmod 0755, bin/"ariaflow-server"
   end
