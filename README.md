@@ -1,30 +1,34 @@
 # homebrew-ariaflow
 
-Tap for installing the `ariaflow` engine and `ariaflow-web` frontend with Homebrew.
-
-Install the engine:
+Tap for installing ariaflow components with Homebrew.
 
 ```bash
 brew tap bonomani/ariaflow
+```
+
+Install everything:
+
+```bash
 brew install ariaflow
 ```
 
-Install the frontend:
+Or install individually:
 
 ```bash
-brew install ariaflow-web
+brew install ariaflow-server      # engine/API only
+brew install ariaflow-dashboard   # web UI only (can connect to a remote server)
 ```
 
-Run both on the same Mac:
+Run as services:
 
 ```bash
-brew services start ariaflow
-brew services start ariaflow-web
+brew services start ariaflow-server
+brew services start ariaflow-dashboard
 ```
 
 Update:
 
 ```bash
-brew upgrade ariaflow
-brew upgrade ariaflow-web
+brew upgrade ariaflow-server
+brew upgrade ariaflow-dashboard
 ```
