@@ -1,4 +1,4 @@
-class AriaflowWeb < Formula
+class AriaflowDashboard < Formula
   desc "Local dashboard frontend for ariaflow"
   homepage "https://github.com/bonomani/ariaflow-dashboard"
   url "https://github.com/bonomani/ariaflow-dashboard/archive/refs/tags/v0.1.286.tar.gz"
@@ -6,7 +6,6 @@ class AriaflowWeb < Formula
   version "0.1.286"
   license "MIT"
   depends_on "python"
-  depends_on "ariaflow"
   head "https://github.com/bonomani/ariaflow-dashboard.git", branch: "main"
 
   def install
