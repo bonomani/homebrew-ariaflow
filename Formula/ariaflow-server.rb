@@ -1,9 +1,9 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.183.tar.gz"
-  sha256 "f0a9da187d53b8f87c35c3ec25e1efd24dd55f2b71ad88ea67056b0ce65edebd"
-  version "0.1.183"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.184.tar.gz"
+  sha256 "d73c558e92fe7305570fbe2464e28d44ee5bfe85d6d7255d967576c9ae545da5"
+  version "0.1.184"
   license "MIT"
   depends_on "python"
   depends_on "aria2"
@@ -23,12 +23,11 @@ class AriaflowServer < Formula
 
     libexec.install "src"
 
-    # Resolve the site-packages path at install time (glob won't expand at runtime)
-    site_packages = Dir[venv/"lib/python*/site-packages"].first
-
     (bin/"ariaflow-server").write <<~EOS
       #!/bin/bash
-      exec env PYTHONPATH="#{libexec}/src:#{site_packages}:${PYTHONPATH}" #{venv}/bin/python3 -m ariaflow_server "$@"
+      VENV="#{libexec}/venv"
+      SITE=$(find "$VENV/lib" -maxdepth 1 -name 'python3.*' -print -quit)/site-packages
+      exec env PYTHONPATH="#{libexec}/src:$SITE:${PYTHONPATH}" "$VENV/bin/python3" -m ariaflow_server "$@"
     EOS
     chmod 0755, bin/"ariaflow-server"
   end
