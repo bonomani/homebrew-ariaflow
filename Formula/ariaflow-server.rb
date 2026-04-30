@@ -1,39 +1,47 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.229.tar.gz"
-  sha256 "fe2df2be864f3df4103a351a2327d6aed3e7ab60a2f9db7657c3bbcc2f83d8c2"
-  version "0.1.229"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.231.tar.gz"
+  sha256 "5cfa2453b521a919d0586cf1e934bc3586d702b7f1625ee7f68fff010187fa5d"
+  version "0.1.231"
   license "MIT"
-  depends_on "python"
+  depends_on "node"
   depends_on "aria2"
+  depends_on "corepack" => :build
   head "https://github.com/bonomani/ariaflow-server.git", branch: "main"
 
-  resource "portalocker" do
-    url "https://files.pythonhosted.org/packages/source/p/portalocker/portalocker-3.2.0.tar.gz"
-    sha256 "1f3002956a54a8c3730586c5c77bf18fae4149e07eaf1c29fc3faf4d5a3f89ac"
-  end
-
   def install
-    python3 = "python3"
-    venv = libexec/"venv"
-    system python3, "-m", "venv", venv
-    venv_pip = venv/"bin/pip"
-    resource("portalocker").stage { system venv_pip, "install", "." }
+    ENV["COREPACK_ENABLE_DOWNLOAD_PROMPT"] = "0"
+    system "corepack", "enable"
+    system "corepack", "prepare", "pnpm@9", "--activate"
+    system "pnpm", "install", "--frozen-lockfile=false"
+    system "pnpm", "build"
+    system "pnpm", "--filter", "@ariaflow/cli", "deploy", "--prod", "--legacy",
+           "#{libexec}/cli"
+    libexec.install "openapi.yaml"
 
-    libexec.install "src"
+    (bin/"ariaflow").write <<~EOS
+      #!/bin/bash
+      exec "${HOMEBREW_PREFIX}/bin/node" "#{libexec}/cli/dist/index.js" "$@"
+    EOS
+    chmod 0755, bin/"ariaflow"
 
+    # Back-compat shim: pre-TS users scripted against `ariaflow-server`.
     (bin/"ariaflow-server").write <<~EOS
       #!/bin/bash
-      VENV="#{libexec}/venv"
-      SITE=$(find "$VENV/lib" -maxdepth 1 -name 'python3.*' -print -quit)/site-packages
-      exec env PYTHONPATH="#{libexec}/src:$SITE:${PYTHONPATH}" "$VENV/bin/python3" -m ariaflow_server "$@"
+      exec "${HOMEBREW_PREFIX}/bin/ariaflow" "$@"
     EOS
     chmod 0755, bin/"ariaflow-server"
   end
 
   service do
-    run [opt_bin/"ariaflow-server", "serve", "--host", "127.0.0.1", "--port", "8000"]
+    run [
+      opt_bin/"ariaflow", "serve",
+      "--host", "127.0.0.1",
+      "--port", "8000",
+      "--scheduler",
+      "--openapi-yaml", "#{opt_libexec}/openapi.yaml"
+    ]
     keep_alive true
     working_dir var
     log_path var/"log/ariaflow-server.log"
@@ -41,6 +49,7 @@ class AriaflowServer < Formula
   end
 
   test do
-    system bin/"ariaflow-server", "--help"
+    assert_match "ariaflow", shell_output("#{bin}/ariaflow --version")
+    system bin/"ariaflow", "doctor", "--pretty"
   end
 end
