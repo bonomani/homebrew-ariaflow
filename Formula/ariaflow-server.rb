@@ -1,9 +1,9 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.233.tar.gz"
-  sha256 "211ca9e0662df8a5d0604bfa963efe21e2ad0ba11a1487fa63f177657db46cc4"
-  version "0.1.233"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.234.tar.gz"
+  sha256 "b89745a7e2d8e1a2e3609cdc954b83b01cf553838f33da1255d26dd728110f0b"
+  version "0.1.234"
   license "MIT"
   depends_on "node"
   depends_on "aria2"
@@ -11,22 +11,32 @@ class AriaflowServer < Formula
   head "https://github.com/bonomani/ariaflow-server.git", branch: "main"
 
   def install
+    # Stamp the formula version into the CLI package.json so
+    # `ariaflow --version` and /api/version report the real release.
+    # The git source tarball ships 0.0.0; only release-npm.yml's
+    # publish path patches this normally.
+    inreplace "packages/cli/package.json", /"version": "[^"]*"/,
+              "\"version\": \"#{version}\""
+
     system "pnpm", "install", "--frozen-lockfile=false"
     system "pnpm", "build"
     system "pnpm", "--filter", "@ariaflow/cli", "deploy", "--prod",
            "#{libexec}/cli"
     libexec.install "openapi.yaml"
 
+    # Hardcode the node + script paths via Ruby interpolation —
+    # launchd doesn't set HOMEBREW_PREFIX, so $-expansion at shell
+    # time would fail (exit 126: command not executable).
     (bin/"ariaflow").write <<~EOS
       #!/bin/bash
-      exec "${HOMEBREW_PREFIX}/bin/node" "#{libexec}/cli/dist/index.js" "$@"
+      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/cli/dist/index.js" "$@"
     EOS
     chmod 0755, bin/"ariaflow"
 
     # Back-compat shim: pre-TS users scripted against `ariaflow-server`.
     (bin/"ariaflow-server").write <<~EOS
       #!/bin/bash
-      exec "${HOMEBREW_PREFIX}/bin/ariaflow" "$@"
+      exec "#{opt_bin}/ariaflow" "$@"
     EOS
     chmod 0755, bin/"ariaflow-server"
   end
