@@ -1,9 +1,9 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.232.tar.gz"
-  sha256 "52fa5b2aca60c618364471f5f291d80d8368bc2da269e53acfd6ab7fd178f89d"
-  version "0.1.232"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.233.tar.gz"
+  sha256 "211ca9e0662df8a5d0604bfa963efe21e2ad0ba11a1487fa63f177657db46cc4"
+  version "0.1.233"
   license "MIT"
   depends_on "node"
   depends_on "aria2"
@@ -13,7 +13,7 @@ class AriaflowServer < Formula
   def install
     system "pnpm", "install", "--frozen-lockfile=false"
     system "pnpm", "build"
-    system "pnpm", "--filter", "@ariaflow/cli", "deploy", "--prod", "--legacy",
+    system "pnpm", "--filter", "@ariaflow/cli", "deploy", "--prod",
            "#{libexec}/cli"
     libexec.install "openapi.yaml"
 
