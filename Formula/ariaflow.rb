@@ -1,9 +1,9 @@
 class Ariaflow < Formula
   desc "Install ariaflow server and dashboard together"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.219.tar.gz"
-  sha256 "133ab5d6c7f3a1b05a62a20ef811899cda6422ff8953d347eb97c4d6558829db"
-  version "0.1.219"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.220.tar.gz"
+  sha256 "ca13617f6c34a6289647e90ad54898083e6692f126105fdb20d668d1489eed77"
+  version "0.1.220"
   license "MIT"
 
   depends_on "ariaflow-server"
