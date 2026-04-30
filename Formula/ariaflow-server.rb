@@ -1,19 +1,16 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.231.tar.gz"
-  sha256 "5cfa2453b521a919d0586cf1e934bc3586d702b7f1625ee7f68fff010187fa5d"
-  version "0.1.231"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.232.tar.gz"
+  sha256 "52fa5b2aca60c618364471f5f291d80d8368bc2da269e53acfd6ab7fd178f89d"
+  version "0.1.232"
   license "MIT"
   depends_on "node"
   depends_on "aria2"
-  depends_on "corepack" => :build
+  depends_on "pnpm" => :build
   head "https://github.com/bonomani/ariaflow-server.git", branch: "main"
 
   def install
-    ENV["COREPACK_ENABLE_DOWNLOAD_PROMPT"] = "0"
-    system "corepack", "enable"
-    system "corepack", "prepare", "pnpm@9", "--activate"
     system "pnpm", "install", "--frozen-lockfile=false"
     system "pnpm", "build"
     system "pnpm", "--filter", "@ariaflow/cli", "deploy", "--prod", "--legacy",
