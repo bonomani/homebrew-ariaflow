@@ -1,9 +1,9 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.252.tar.gz"
-  sha256 "198961903eb19e214871f653bd51a1be750a244feadd2c5995de0af47d068eab"
-  version "0.1.252"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.253.tar.gz"
+  sha256 "0440b6be79aae01ae1b7d94f3bf5d98008fbcc6b1593514cf38b38e326a14e55"
+  version "0.1.253"
   license "MIT"
   depends_on "node"
   depends_on "aria2"
