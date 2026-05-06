@@ -1,9 +1,9 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.276.tar.gz"
-  sha256 "b47f9c76f36f0ff18c3bc6ebbd8d1c182612d2ddb6735bfc9bf27e9d3a63e950"
-  version "0.1.276"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.277.tar.gz"
+  sha256 "407c6824c44623ac8945a6ae585294bc4ed70082738b763987a67c7c107a80a8"
+  version "0.1.277"
   license "MIT"
   depends_on "node"
   depends_on "aria2"
@@ -22,7 +22,6 @@ class AriaflowServer < Formula
     system "pnpm", "build"
     system "pnpm", "--filter", "@ariaflow/cli", "deploy", "--prod",
            "#{libexec}/cli"
-    libexec.install "openapi.yaml"
 
     # Hardcode the node + script paths via Ruby interpolation —
     # launchd doesn't set HOMEBREW_PREFIX, so $-expansion at shell
@@ -46,8 +45,7 @@ class AriaflowServer < Formula
       opt_bin/"ariaflow", "serve",
       "--host", "127.0.0.1",
       "--port", "8000",
-      "--scheduler",
-      "--openapi-yaml", "#{opt_libexec}/openapi.yaml"
+      "--scheduler"
     ]
     keep_alive true
     working_dir var
