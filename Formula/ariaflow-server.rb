@@ -1,9 +1,9 @@
 class AriaflowServer < Formula
   desc "Sequential aria2 queue driver with adaptive bandwidth control"
   homepage "https://github.com/bonomani/ariaflow-server"
-  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.320.tar.gz"
-  sha256 "4faa64114b668150e043f5e5d950ca2de6bd36f66f50f84c1bd41f311ced97a5"
-  version "0.1.320"
+  url "https://github.com/bonomani/ariaflow-server/archive/refs/tags/v0.1.321.tar.gz"
+  sha256 "eb25fadc5dd51eb9d24f473e6e78f969153e899dc18bf90ed6ce0d2cb1016da1"
+  version "0.1.321"
   license "MIT"
   depends_on "node"
   depends_on "aria2"
@@ -38,6 +38,28 @@ class AriaflowServer < Formula
       exec "#{opt_bin}/ariaflow" "$@"
     EOS
     chmod 0755, bin/"ariaflow-server"
+  end
+
+  # BG-71: macOS TCC permission expectations + Full Disk Access escape
+  # hatch. Text-only — surfaces in `brew info` and at install time.
+  def caveats
+    <<~EOS
+      macOS Privacy permissions:
+
+      On the first download to a protected folder (~/Downloads,
+      ~/Documents, ~/Desktop, iCloud), macOS will prompt for access.
+      Click "Allow" once.
+
+      For headless / unattended setups, or to make the permission
+      survive Node.js upgrades, grant Full Disk Access to
+      /opt/homebrew/bin/node:
+
+        System Settings → Privacy & Security → Full Disk Access
+        → + → /opt/homebrew/bin/node → enable
+
+      The permission persists across `brew upgrade ariaflow-server`.
+      May re-prompt after a major Node.js version bump or macOS upgrade.
+    EOS
   end
 
   service do
